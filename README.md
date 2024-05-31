@@ -54,7 +54,7 @@ types. The numbers are the counts of each line. So you can check what are the li
 pip3 install ezdxf, open3d, numpy, sklearn
 ```
 
-## [optional] Create a config file with json format
+## [optional] Create a config file to specify entity and line types
 
 The script will use `default.config` by default, if you wish to specify the entity and line types you want to extract,
 create a new one with json format.
