@@ -30,14 +30,14 @@ def print_dxf_stat(filepath, layers):
         for layer in entities.keys():
             if layer in layers:
                 entities_filtered[layer] = entities[layer]
-                print(json.dumps(entities_filtered, indent=4, sort_keys=True, ensure_ascii=False))
+        print(json.dumps(entities_filtered, indent=4, sort_keys=True, ensure_ascii=False))
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 3:
-        print_dxf_stat(sys.argv[1], sys.argv[2])
+    if len(sys.argv) >= 3:
+        print_dxf_stat(sys.argv[1], sys.argv[2:])
     elif len(sys.argv) == 2:
         print_dxf_stat(sys.argv[1], None)
     else:
-        print("Usage: python dxf_stat.py <dxf_file> [name_of_layers]")
+        print("Usage: python dxf_check.py <dxf_file> [name_of_layers]")
         sys.exit(1)
