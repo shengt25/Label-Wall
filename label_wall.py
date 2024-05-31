@@ -102,7 +102,7 @@ def entities2pcd(dxf_entities, density=100):
     return pcd
 
 
-def label_wall(pcd, pcd_mask, distance_threshold=0.05, preview_mode=False, preview_sample_rate=0.01, show_progress=False):
+def label_wall(pcd, pcd_mask, distance_threshold=0.05, preview_mode=False, preview_sample_rate=0.01):
     """
     Label the wall points in the point cloud, ignoring the z-axis.
     :param pcd: point cloud of all points
@@ -110,7 +110,6 @@ def label_wall(pcd, pcd_mask, distance_threshold=0.05, preview_mode=False, previ
     :param distance_threshold: distance threshold for considering a point close to the mask
     :param preview_mode: preview mode, only process a subset of points for faster visualization
     :param preview_sample_rate: percentage of points to sample in preview mode
-    :param show_progress: show progress
     :return: labeled point cloud object (either full or sampled based on preview mode)
     """
     points = np.asarray(pcd.points)
@@ -182,13 +181,14 @@ if __name__ == "__main__":
         visualize_result = False
 
     if args.c:
-        dxf_extract_config = json.load(open(args.c))
-        print(f"Extracting config:", end=" ")
+        config_file = args.c
     else:
-        dxf_extract_config = {"seinä": {"LINE": ["BYLAYER", "ACAD_ISO03W100"],
-                                        "LWPOLYLINE": ["BYLAYER"]}}
-        print("Extracting config not specified, using default:", end=" ")
-    print(dxf_extract_config)
+        config_file = "default.config"
+
+    if not os.path.exists(config_file):
+        raise FileNotFoundError("Config file not found, please specify one or put default.config with the script.")
+    dxf_extract_config = json.load(open(config_file))
+    print(f"Using config {config_file}: {dxf_extract_config}")
 
     # prepare data
     print("Loading data...")
