@@ -108,3 +108,7 @@ With `wall.dxf` and `room.ply`, using `type_1.config`, run:
 ```bash
 python3 label_wall.py wall.dxf room.ply -c type_1.config
 ```
+
+# Todo
+- `ARC` entity type is not supported yet. Although the code is already in the `label_wall.py`, disabled for not tested.
+- In `LWPOLYLINE` entity type, bulge is not supported yet.
