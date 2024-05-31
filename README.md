@@ -90,8 +90,7 @@ Parameters:
 
 - dxf file: the path to the input dxf file
 - ply file: the path to the input ply file
-- [optional] -o out.ply: the path to the output ply file, if not specified, it will use original file name with `_label`
-  and a number suffix
+- [optional] -o out.ply: the path to the output ply file, if not specified, it will save to the same directory as input ply file, with name `{original_name}_label_{number_suffix}`
 - [optional] -c cfg.config: the path to the config file, if not specified, it will use `default.config`
 - [optional] -t: visualize a quick testing by using only 1% of the point cloud. Not saving the output file.
 - [optional] -v: visualize the result after saving labeled file.
