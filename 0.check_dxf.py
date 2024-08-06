@@ -39,5 +39,5 @@ if __name__ == "__main__":
     elif len(sys.argv) == 2:
         print_dxf_stat(sys.argv[1], None)
     else:
-        print("Usage: python dxf_check.py <dxf_file> [name_of_layers]")
+        print("Usage: python 0.check_dxf.py <dxf_file> [name_of_layers]")
         sys.exit(1)
