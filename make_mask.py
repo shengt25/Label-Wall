@@ -159,8 +159,8 @@ def main():
     parser = argparse.ArgumentParser(description="Label wall in a point cloud based on a dxf drawing.")
 
     # position args
-    parser.add_argument("dxf_file", type=str, help="path to input dxf file")
     parser.add_argument("ply_file", type=str, help="path to input ply file")
+    parser.add_argument("dxf_file", type=str, help="path to input dxf file")
 
     # optional args
     parser.add_argument("--save-path", type=str,

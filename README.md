@@ -97,13 +97,12 @@ The config file should be like:
 ### Basic Usage
 
 ```bash
-python3 make_mask.py <dxf_file> <ply_file>
+python3 make_mask.py <ply_file> <dxf_file>
 ```
 
 Parameters:
-
-- dxf_file: the path to the input dxf file
 - ply_file: the path to the input ply file
+- dxf_file: the path to the input dxf file
 
 For example:
 
