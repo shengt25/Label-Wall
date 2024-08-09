@@ -39,7 +39,7 @@ def main():
         npy_file = sys.argv[1]
         fg_label = int(sys.argv[2])
     else:
-        print("Usage: python visualize_npy.py <npy_file> [fg_label]")
+        print("Usage: python vis_npy.py <npy_file> [fg_label]")
         sys.exit(1)
 
     npy_pcd = np.load(npy_file)
