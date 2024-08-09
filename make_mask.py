@@ -50,26 +50,30 @@ def interpolate_lwpolyline(points, density=100):
 # MAIN FUNCTIONS
 def dxf_extract(filepath, extract_option):
     """Extract entities from a dxf file based on the given options."""
-    # load dxf file
     doc = ezdxf.readfile(filepath)
     msp = doc.modelspace()
     entities = {}
+
     for entity in msp:
-        # 1. traverse layers
-        for layer, entity_types in extract_option.items():
-            if entity.dxf.layer == layer:
-                # 2. traverse entity types
-                for entity_type, line_types in entity_types.items():
-                    if entity.dxftype() == entity_type:
-                        # 3. traverse line types
-                        for line_type in line_types:
-                            if entity.dxf.linetype == line_type:
-                                # 4. add to dictionary list
-                                if entity_type not in entities:
-                                    entities[entity_type] = [entity]
-                                else:
-                                    entities[entity_type].append(entity)
-                break  # break the loop if the layer is found
+        layer = entity.dxf.layer
+        entity_type = entity.dxftype()
+        line_type = entity.dxf.linetype
+
+        if layer not in extract_option:
+            continue
+
+        entity_types = extract_option[layer]
+        if entity_type not in entity_types:
+            continue
+
+        line_types = entity_types[entity_type]
+        if line_type not in line_types:
+            continue
+
+        if entity_type not in entities:
+            entities[entity_type] = []
+        entities[entity_type].append(entity)
+
     return entities
 
 
@@ -155,12 +159,13 @@ def main():
     parser = argparse.ArgumentParser(description="Label wall in a point cloud based on a dxf drawing.")
 
     # position args
-    parser.add_argument("--dxf", type=str, help="path to input dxf file")
-    parser.add_argument("--ply", type=str, help="path to input ply file")
+    parser.add_argument("dxf_file", type=str, help="path to input dxf file")
+    parser.add_argument("ply_file", type=str, help="path to input ply file")
 
     # optional args
-    parser.add_argument("--save-path", type=str, help="path to save labeled ply file (optional) ")
-    parser.add_argument("--thick", type=float, default=0.04)
+    parser.add_argument("--save-path", type=str,
+                        help="path to save labeled ply file, default to the same directory input files")
+    parser.add_argument("--thick", type=float, default=0.04, help="distance threshold for labeling (default: 0.04)")
     parser.add_argument("--config", type=str, metavar='default.config',
                         help="config file for dxf extraction configuration (in json format)")
     parser.add_argument("--test-run", action="store_true", help="test run with a fast visualization, without saving")
@@ -168,8 +173,8 @@ def main():
 
     # parse arguments
     args = parser.parse_args()
-    dxf_file = args.dxf
-    ply_file = args.ply
+    dxf_file = args.dxf_file
+    ply_file = args.ply_file
 
     if args.test_run:
         print("Test mode, not saving the labeled point cloud")

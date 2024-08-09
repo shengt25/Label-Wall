@@ -1,4 +1,0 @@
-numpy
-open3d
-ezdxf
-scikit-learn
