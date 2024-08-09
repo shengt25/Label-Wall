@@ -2,7 +2,7 @@ import numpy as np
 import open3d as o3d
 import argparse
 import os
-from util.visualize_npy import visualize_npy
+from tools.vis_npy import visualize_npy
 
 
 def create_npy(original_pcd, mask_pcd, fg_label=2, bg_label=12):
