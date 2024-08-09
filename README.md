@@ -1,4 +1,4 @@
-# 0. Install Dependencies
+# Install Dependencies
 
 ```
 pip3 install ezdxf, open3d, numpy, sklearn
@@ -13,17 +13,20 @@ In order to parse lines from a dxf file, we need to know the information of the 
 
 ## 1.1 Run python script
 
-`python3 dxf_check.py <dxf file> [layers...]`
+```bash
+python3 util/check_dxf.py <dxf_file> [layers...]
+```
 
 - dxf file: the path to the dxf file
-- layers (optional): names of layers you wish to see. If not specified, it will print all
+- layers (optional): names of layers you wish to see. You can enter multiply names split with whitespace. If not
+  specified, it will print all
   layers.
 
 For example, to check the information of the dxf file `example.dxf`, with only one layer called `seinä`,
 run:
 
 ```bash
-python3 0.check_dxf.py example.dxf seinä
+python3 util/check_dxf.py example.dxf seinä
 ```
 
 The output will be like:
@@ -45,19 +48,33 @@ The output will be like:
 ```
 
 In this result, `LINE` and `LWPOLYLINE` are entity types. `ACAD_ISO03W100`, `ACAD_ISO10W100`, and `BYLAYER` are line
-types. The numbers are the counts of each line. So you can check what are the lines you wish to use in the next step.
+types. The numbers are the counts of each type of line. So you can check what are the lines you wish to use in the next
+step.
 
-# 2. Label Walls
+# 2. Create Mask for Walls
 
 ## 2.1 [optional] Create a config file to specify entity and line types
 
-The script will use `default.config` by default, if you wish to specify the entity and line types you want to extract,
-create a new one with json format.
+The script will use `default.config` by default, which will extract `LINE` and `LWPOLYLINE` entity types with line.  
+With `default2.config` it will also extract `LINE` and `LWPOLYLINE` entity type, but with line and ISO dash space
+line.  
+If you wish to specify the entity and line types you want to extract, create a new one with json format.
 
 For example:
 
 - `LINE` with line types `BYLAYER` and `ACAD_ISO03W100`
 - `LWPOLYLINE` with line type `BYLAYER`
+
+Entity types:
+
+- 'LINE': Normal line defined by two points,
+- 'LWPOLYLINE': Polyline with more points.
+
+Line types:
+
+- `BYLAYER`: `Defined by layer`,
+- `ACAD_ISO10W100`: `ISO dash dot`,
+- `ACAD_ISO03W100`: `ISO dash space`.
 
 The config file should be like:
 
@@ -75,58 +92,75 @@ The config file should be like:
 }
 ```
 
-P.S. `ACAD_ISO10W100` means `ISO dash dot`, `ACAD_ISO03W100` means `ISO dash space`.
-
 ## 2.2 Run python script
 
-`python3 label_wall.py <dxf file> <ply_file> [-o out.ply] [-c cfg.config] [-t] [-v]`
+### Basic Usage
+
+```bash
+python3 make_mask.py <dxf_file> <ply_file>
+```
 
 Parameters:
 
-- dxf file: the path to the input dxf file
-- ply file: the path to the input ply file
-- [optional] -o out.ply: the path to the output ply file, if not specified, it will save to the same directory as input
-  ply file, with name `{original_name}_label_{number_suffix}`
-- [optional] -c cfg.config: the path to the config file, if not specified, it will use `default.config`
-- [optional] -t: visualize a quick testing by using only 1% of the point cloud. Not saving the output file.
-- [optional] -v: visualize the result after saving labeled file.
-- [optional] -d: distance threshold for dxf line to points, default is 0.05, the higher the value, the thicker the wall
-  will be labeled.
+- dxf_file: the path to the input dxf file
+- ply_file: the path to the input ply file
 
 For example:
 
 With `wall.dxf` and `room.ply`, run:
 
 ```bash
-python3 1.label_wall.py wall.dxf room.ply
+python3 make_mask.py wall.dxf room.ply
 ```
 
-With `wall.dxf` and `room.ply`, using `new_cfg_file.config`, run:
+### Advanced Usage
+
+Please refer to the help message for more options.
 
 ```bash
-python3 1.label_wall.py wall.dxf room.ply -c new_cfg_file.config
+python3 make_mask.py -h
 ```
 
-# 3. [optional] Inspect the labeled file
+# 3. Create Labeled File
+
+## 3.1 [Optional] Adjust the mask ply file
 
 Use other software to inspect the labeled file, such as `CloudCompare`. You can see the labeled walls in green color.
 Make further modifications manually if needed. To do this:
 
 - Change the color of walls to be green (RGB: 0, 255, 0),
-- Change the color of other points to be any other color.
+- Change the color of other points to be any other color, by default light grey.
 
-# 4. Convert ply file to npy file
+## 3.2 Run python script
 
-## 4.1 Run python script
+### Basic Usage
 
+```bash
+python3 make_npy.py <ply_file> <mask_ply_file>
 ```
-python3 ply2npy.py <ply file>
+
+Parameters:
+ply_file: the path to the input ply file
+mask_ply_file: the path to the input mask ply file
+
+For example:
+With `room.ply` and `room_mask.ply`, run:
+
+```bash
+python3 make_npy.py room.ply room_mask.ply
 ```
 
-The script will save the npy file in the same directory as the ply file, with the same name but different extension.
+### Advanced Usage
+
+Please refer to the help message for more options.
+
+```bash
+python3 make_npy.py -h
+```
 
 # Todo
 
-- Use another method such as a mask ply file, to prevent overwriting the color.
-- `ARC` entity type is not supported yet. Although the code is already in the `label_wall.py`, disabled for not tested.
-- In `LWPOLYLINE` entity type, bulge is not supported yet.
+- [x] Use another method such as a mask ply file, to prevent overwriting the color.
+- [ ] `ARC` entity type is not supported yet. Although the code is already in the `label_wall.py`, disabled for not
+  tested.
+- [ ] In `LWPOLYLINE` entity type, bulge is not supported yet.
