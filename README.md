@@ -14,7 +14,7 @@ In order to parse lines from a dxf file, we need to know the information of the 
 ## 1.1 Run python script
 
 ```bash
-python3 util/check_dxf.py <dxf_file> [layers...]
+python3 tools/check_dxf.py <dxf_file> [layers...]
 ```
 
 - dxf file: the path to the dxf file
@@ -26,7 +26,7 @@ For example, to check the information of the dxf file `example.dxf`, with only o
 run:
 
 ```bash
-python3 util/check_dxf.py example.dxf seinä
+python3 tools/check_dxf.py example.dxf seinä
 ```
 
 The output will be like:
@@ -123,7 +123,7 @@ python3 make_mask.py -h
 
 # 3. Create Labeled File
 
-## 3.1 [Optional] Adjust the mask ply file
+## 3.1 [Optional] Modify the mask
 
 Use other software to inspect the labeled file, such as `CloudCompare`. You can see the labeled walls in green color.
 Make further modifications manually if needed. To do this:
@@ -157,6 +157,36 @@ Please refer to the help message for more options.
 ```bash
 python3 make_npy.py -h
 ```
+
+# Tool Scripts
+
+## npy2ply.py
+
+Convert npy to ply and mask ply file, in order to easily inspect or modify the labeled npy file. The foreground points
+will be colored with green,
+
+```bash
+python3 tools/npy2ply.py <npy_file> [fg_label]
+```
+
+Parameters:
+
+- npy_file: the path to the input npy file
+- fg_label (optional): the label of the foreground points, default is 2.
+
+## visualize_npy.py
+
+Visualize the labeled npy file, with the foreground points in green color. Also with the original point cloud in light
+grey next to the labeled one.
+
+```bash
+python3 tools/vis_npy.py <npy_file> [fg_label]
+```
+
+Parameters:
+
+- npy_file: the path to the input npy file
+- fg_label (optional): the label of the foreground points, default is 2.
 
 # Todo
 
