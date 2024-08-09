@@ -31,8 +31,8 @@ def create_npy(original_pcd, mask_pcd, fg_label=2, bg_label=12):
 
 def main():
     parser = argparse.ArgumentParser(description="Label wall points in a point cloud based on a dxf format mask.")
-    parser.add_argument("--ply", type=str, help="Path to the original point cloud file")
-    parser.add_argument("--mask", type=str, help="Path to the mask point cloud file")
+    parser.add_argument("ply_file", type=str, help="Path to the original point cloud file")
+    parser.add_argument("mask_ply_file", type=str, help="Path to the mask point cloud file")
 
     parser.add_argument("--save-path", type=str, help="Path to save the labeled point cloud file (optional)")
     parser.add_argument("--vis", action="store_true", help="vis the labeled point cloud")
@@ -41,11 +41,11 @@ def main():
 
     args = parser.parse_args()
 
-    ply_file = args.ply
-    mask_file = args.mask
+    ply_file = args.ply_file
+    mask_ply_file = args.mask_ply_file
 
     original_pcd = o3d.io.read_point_cloud(ply_file)
-    mask_pcd = o3d.io.read_point_cloud(mask_file)
+    mask_pcd = o3d.io.read_point_cloud(mask_ply_file)
 
     npy_pcd = create_npy(original_pcd, mask_pcd, fg_label=args.fg_label, bg_label=args.bg_label)
 
